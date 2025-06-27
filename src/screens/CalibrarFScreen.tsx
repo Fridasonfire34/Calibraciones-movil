@@ -37,7 +37,8 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
         const now = moment();
         const next = moment().add(90, 'days');
         setDateNow(now.format('YYYY-MM-DD'));
-        setNextCalibration(next.format('YYYY-MM-DD'));
+        setNextCalibration(next.format('YYYY-MM'));
+        setPatron('I-CAL-001');
     }, []);
 
     const handleChangeDimension = (index: number, value: string) => {
@@ -47,8 +48,8 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
     };
 
     const isFormValid = () => {
-        return dimensiones.every((d) => d.trim() !== '') && patron.trim() !== '';
-    };
+    return dimensiones.every((d) => d.trim() !== '');
+};
 
     const handleGuardar = async () => {
         const nuevasFuera = Array(7).fill(false);
@@ -191,12 +192,15 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
                         <Text style={styles.label}>Siguiente Calibración: {nextCalibration}</Text>
 
                         <TouchableOpacity
-                            style={[styles.GuardarButton, !isFormValid() && styles.disabledButton]}
-                            onPress={handleGuardar}
-                            disabled={!isFormValid()}
-                        >
-                            <Text style={styles.buttonText}>Guardar calibración</Text>
-                        </TouchableOpacity>
+    style={[
+        styles.GuardarButton,
+        !isFormValid() && styles.disabledButton
+    ]}
+    onPress={handleGuardar}
+    disabled={!isFormValid()}
+>
+    <Text style={styles.buttonText}>Guardar calibración</Text>
+</TouchableOpacity>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>

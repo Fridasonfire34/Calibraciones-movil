@@ -33,7 +33,7 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
         const fetchEquipos = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://10.0.2.2:3003/api/transportadores');
+                const response = await axios.get('http://10.0.2.2:3003/api/transportador');
                 setEquipos(response.data);
                 setFilteredEquipos(response.data);
             } catch (error: any) {
@@ -75,7 +75,7 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
     const handleCalibrar = () => {
         if (selectedItems.length > 0) {
             const selectedEquipo = selectedItems[0]; // suponemos que solo uno se puede seleccionar
-            navigation.navigate('CalibrarTScreen', {
+            navigation.navigate('CalibrarTransportadorScreen', {
                 equipo: selectedEquipo.ID,
                 nomina: nomina
             });
@@ -103,7 +103,7 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
         >
             <View style={styles.topContainer}>
                 <Text style={styles.userText}>{nomina}</Text>
-                <Text style={styles.title}>Flexómetros</Text>
+                <Text style={styles.title}>Transportadores</Text>
 
                 <View style={styles.inputContainer}>
                     <TextInput

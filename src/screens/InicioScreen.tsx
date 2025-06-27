@@ -8,7 +8,8 @@ import { Alert } from 'react-native';
 type RootStackParamList = {
     Inicio: undefined;
     FlexScreen: { nomina: string };
-    VernScreen: { nomina: string }
+    VernScreen: { nomina: string };
+    TransportadorScreen: { nomina: string}
 };
 
 type InicioScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Inicio'>;
@@ -59,6 +60,21 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
         navigation.navigate('VernScreen', { nomina: user.Nomina });
     };
 
+    const handleTrans = async () => {
+        try {
+            const response = await fetch('http://10.0.2.2:3003/api/historicoTransportador');
+            if (!response.ok) {
+                throw new Error('No se pudo procesar el histórico');
+            }
+
+            navigation.navigate('TransportadorScreen', { nomina: user.Nomina });
+
+        } catch (error) {
+            console.error('Error al procesar el histórico:', error);
+            Alert.alert('Hubo un problema al procesar el histórico. Intenta nuevamente.');
+        }
+    };
+
     return (
         <ImageBackground
             source={require('./assets/cats.jpg')}
@@ -95,7 +111,7 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.optionButton}
-                        onPress={handleVer}>
+                        onPress={handleTrans}>
                         <Image
                             source={require('./assets/Goniometro.png')}
                             style={styles.buttonImageG}

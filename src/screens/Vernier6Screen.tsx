@@ -103,7 +103,7 @@ const Vernier6Screen: React.FC<Props> = ({ route, navigation }) => {
         >
             <View style={styles.topContainer}>
                 <Text style={styles.userText}>{nomina}</Text>
-                <Text style={styles.title}>Vernier 6</Text>
+                <Text style={styles.title}>Vernier 6"</Text>
 
                 <View style={styles.inputContainer}>
                     <TextInput

@@ -9,27 +9,24 @@ import { RootStackParamList } from './App';
 import moment from 'moment';
 import { useNavigation } from '@react-navigation/native';
 
-type Props = StackScreenProps<RootStackParamList, 'CalibrarV6Screen'>;
+type Props = StackScreenProps<RootStackParamList, 'CalibrarTransportadorScreen'>;
 
-const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
+const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
     const [dateNow, setDateNow] = useState('');
     const [nextCalibration, setNextCalibration] = useState('');
     const [estatus, setEstatus] = useState('OK');
-    const [dimensiones, setDimensiones] = useState(Array(6).fill(''));
+    const [dimensiones, setDimensiones] = useState(Array(3).fill(''));
     const [patron, setPatron] = useState('');
     const [comentarios, setComentarios] = useState('');
     const navigation = useNavigation();
-    const [dimensionesFuera, setDimensionesFuera] = useState<boolean[]>(Array(6).fill(false));
+    const [dimensionesFuera, setDimensionesFuera] = useState<boolean[]>(Array(3).fill(false));
     const { width, height } = useWindowDimensions();
     const { equipo, nomina } = route.params;
 
     const tolerances = [
-        { min: 0.999, max: 1.001 },
-        { min: 1.999, max: 2.001 },
-        { min: 2.999, max: 3.001 },
-        { min: 0.999, max: 1.001 },
-        { min: 1.999, max: 2.001 },
-        { min: 2.999, max: 3.001 }
+        { min: 89, max: 91 },
+        { min: 89, max: 91 },
+        { min: 89, max: 91 }
     ];
 
     useEffect(() => {
@@ -37,7 +34,7 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
         const next = moment().add(90, 'days');
         setDateNow(now.format('YYYY-MM-DD'));
         setNextCalibration(next.format('YYYY-MM'));
-         setPatron('I-CAL-002');
+        setPatron('I-CAL-008');
     }, []);
 
     const handleChangeDimension = (index: number, value: string) => {
@@ -47,11 +44,11 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
     };
 
     const isFormValid = () => {
-        return dimensiones.every((d) => d.trim() !== '');
-    };
+    return dimensiones.every((d) => d.trim() !== '');
+};
 
     const handleGuardar = async () => {
-        const nuevasFuera = Array(6).fill(false);
+        const nuevasFuera = Array(3).fill(false);
         const fueraIndices: number[] = [];
 
         dimensiones.forEach((valor, index) => {
@@ -97,7 +94,7 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
         };
 
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/calibracionVer', {
+            const response = await fetch('http://10.0.2.2:3003/api/calibracionTrans', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -107,19 +104,19 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://10.0.2.2:3003/api/vernier', {
+            const updateResponse = await fetch('http://10.0.2.2:3003/api/transportador', {
                 method: 'GET',
             });
 
             if (!updateResponse.ok) throw new Error('Error al actualizar la tabla');
 
             const flexometrosData = await updateResponse.json();
-            console.log('Tabla de flexómetros actualizada:', flexometrosData);
+            console.log('Tabla de Transportadores actualizada:', flexometrosData);
 
             Alert.alert('Éxito', 'Calibración registrada correctamente', [
                 {
                     text: 'OK',
-                    onPress: () => navigation.navigate('Vernier6Screen', { nomina }),
+                    onPress: () => navigation.navigate('TransportadorScreen', { nomina }),
                 },
             ]);
         } catch (error) {
@@ -136,9 +133,9 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
                         <Text style={styles.subtitle}>{nomina}</Text>
                         <View style={styles.equipoRow}>
                             <Text style={styles.title}>{equipo}</Text>
-                            <Image source={require('./assets/vernier.png')} style={styles.equipoIcon} resizeMode="contain" />
+                            <Image source={require('./assets/Goniometro.png')} style={styles.equipoIcon} resizeMode="contain" />
                         </View>
-                        <Text style={styles.tolerance}>Tolerancia: ± 0.001"</Text>
+                        <Text style={styles.tolerance}>Tolerancia: ± 1°</Text>
                         <Text style={styles.labelDate}>Fecha: {dateNow}</Text>
 
                         <View style={[styles.dimensionContainer, { width: width * 0.8 }]}>
@@ -160,7 +157,7 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
 
                         <View style={{ width: '48%' }}>
                             <Text style={styles.dimensionLabel}>Patrón de Verificación:</Text>
-                            <Text style={styles.inputPatron}>{'I-CAL-002'}</Text>
+                            <Text style={styles.inputPatron}>{'I-CAL-003'}</Text>
                         </View>
 
                         <Text style={styles.label}>Comentarios:</Text>
@@ -337,4 +334,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CalibrarV6Screen;
+export default CalibrarTransportadorScreen;

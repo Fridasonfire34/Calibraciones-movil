@@ -36,7 +36,7 @@ const CalibrarV12Screen: React.FC<Props> = ({ route }) => {
         const now = moment();
         const next = moment().add(90, 'days');
         setDateNow(now.format('YYYY-MM-DD'));
-        setNextCalibration(next.format('YYYY-MM-DD'));
+        setNextCalibration(next.format('YYYY-MM'));
     }, []);
 
     const handleChangeDimension = (index: number, value: string) => {
@@ -46,7 +46,7 @@ const CalibrarV12Screen: React.FC<Props> = ({ route }) => {
     };
 
     const isFormValid = () => {
-        return dimensiones.every((d) => d.trim() !== '') && patron.trim() !== '';
+        return dimensiones.every((d) => d.trim() !== '');
     };
 
     const handleGuardar = async () => {
@@ -118,7 +118,7 @@ const CalibrarV12Screen: React.FC<Props> = ({ route }) => {
             Alert.alert('Éxito', 'Calibración registrada correctamente', [
                 {
                     text: 'OK',
-                    onPress: () => navigation.navigate('Vernier6Screen', { nomina }),
+                    onPress: () => navigation.navigate('Vernier12Screen', { nomina }),
                 },
             ]);
         } catch (error) {
@@ -159,7 +159,7 @@ const CalibrarV12Screen: React.FC<Props> = ({ route }) => {
 
                         <View style={{ width: '48%' }}>
                             <Text style={styles.dimensionLabel}>Patrón de Verificación:</Text>
-                            <Text style={styles.inputPatron}>{'I-CAL-001'}</Text>
+                            <Text style={styles.inputPatron}>{'I-CAL-003'}</Text>
                         </View>
 
                         <Text style={styles.label}>Comentarios:</Text>

@@ -1,137 +1,98 @@
 import React, { useEffect, useState } from 'react';
 import {
-    View, Text, StyleSheet, ImageBackground, Image, TextInput, Button, TouchableOpacity, Alert, Dimensions, useWindowDimensions, ScrollView,
-    KeyboardAvoidingView,
-    Platform,
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    ImageBackground,
+    TextInput,
+    FlatList
 } from 'react-native';
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
+import axios from 'axios';
+import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from './App';
-import moment from 'moment';
-import { useNavigation } from '@react-navigation/native';
+import { Alert } from 'react-native';
 
-type RootStackParamList = {
-    FlexScreen: { nomina: string }
-    Vernier6Screen: { nomina: string }
-    Vernier12Screen: { nomina: string }
-};
+type Props = StackScreenProps<RootStackParamList, 'Vernier12Screen'>;
 
-type Vernier12ScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Vernier12Screen'>;
+interface Equipos {
+    ID: string;
+}
 
-const Vernier12Screen: React.FC<Props> = ({ route }) => {
-    const [dateNow, setDateNow] = useState('');
-    const [nextCalibration, setNextCalibration] = useState('');
-    const [estatus, setEstatus] = useState('OK');
-    const [dimensiones, setDimensiones] = useState(Array(7).fill(''));
-    const [patron, setPatron] = useState('');
-    const [comentarios, setComentarios] = useState('');
-    const navigation = useNavigation();
-    const [dimensionesFuera, setDimensionesFuera] = useState<boolean[]>(Array(7).fill(false));
-    const { width, height } = useWindowDimensions();
-    const { equipo, nomina } = route.params;
+const Vernier12Screen: React.FC<Props> = ({ route, navigation }) => {
+    const { nomina } = route.params;
 
-    const tolerances = [
-        { min: 1.38, max: 2.62 },
-        { min: 9.38, max: 10.62 },
-        { min: 19.38, max: 20.62 },
-        { min: 29.38, max: 30.62 },
-        { min: 39.38, max: 40.62 },
-        { min: 79.38, max: 80.62 },
-        { min: 119.38, max: 120.62 },
-    ];
+    const [equipos, setEquipos] = useState<Equipos[]>([]);
+    const [filteredEquipos, setFilteredEquipos] = useState<Equipos[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [selectedItems, setSelectedItems] = useState<Equipos[]>([]);
+    const [searchText, setSearchText] = useState<string>('');
+    const [isSearchActive, setIsSearchActive] = useState(false);
 
     useEffect(() => {
-        const now = moment();
-        const next = moment().add(90, 'days');
-        setDateNow(now.format('YYYY-MM-DD'));
-        setNextCalibration(next.format('YYYY-MM-DD'));
-    }, []);
-
-    const handleChangeDimension = (index: number, value: string) => {
-        const updated = [...dimensiones];
-        updated[index] = value;
-        setDimensiones(updated);
-    };
-
-    const isFormValid = () => {
-        return dimensiones.every((d) => d.trim() !== '') && patron.trim() !== '';
-    };
-
-    const handleGuardar = async () => {
-        const nuevasFuera = Array(7).fill(false);
-        const fueraIndices: number[] = [];
-
-        dimensiones.forEach((valor, index) => {
-            const num = parseFloat(valor);
-            const { min, max } = tolerances[index];
-            if (num < min || num > max) {
-                nuevasFuera[index] = true;
-                fueraIndices.push(index + 1);
+        const fetchEquipos = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get('http://10.0.2.2:3003/api/vernier12');
+                setEquipos(response.data);
+                setFilteredEquipos(response.data);
+            } catch (error: any) {
+                let errorMessage = '';
+                if (error.response) {
+                    errorMessage = `Error ${error.response.status}: ${error.response.data || 'No hay detalles disponibles'}`;
+                } else if (error.request) {
+                    errorMessage = 'No se recibió respuesta del servidor.';
+                } else {
+                    errorMessage = `Error en la solicitud: ${error.message}`;
+                }
+                Alert.alert('Error al obtener los Equipos', errorMessage);
+            } finally {
+                setLoading(false);
             }
-        });
-
-        setDimensionesFuera(nuevasFuera);
-
-        if (fueraIndices.length > 0) {
-            const mensaje =
-                fueraIndices.length === 1
-                    ? `La dimensión ${fueraIndices[0]} está fuera de tolerancia. ¿Deseas continuar?`
-                    : `Las dimensiones ${fueraIndices.join(', ')} están fuera de tolerancia. ¿Deseas continuar?`;
-
-            Alert.alert(
-                'Fuera de tolerancia',
-                mensaje,
-                [
-                    { text: 'NO', style: 'cancel' },
-                    { text: 'SI', onPress: () => guardarConEstado('NO OK') },
-                ]
-            );
-        } else {
-            guardarConEstado(estatus);
-        }
-    };
-
-    const guardarConEstado = async (estatusFinal: string) => {
-        const payload = {
-            nomina,
-            equipo,
-            fecha: dateNow,
-            dimensiones,
-            estatus: estatusFinal,
-            patron,
-            siguienteCalibracion: nextCalibration,
-            comentarios,
         };
 
-        try {
-            const response = await fetch('http://10.0.2.2:3003/api/calibracionVer', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
+        fetchEquipos();
+    }, []);
+
+    const handleSearch = (text: string) => {
+        setSearchText(text);
+        const trimmedText = text.trim().toLowerCase();
+        setIsSearchActive(trimmedText.length > 0);
+
+        const filtered = equipos.filter(item =>
+            item.ID.toLowerCase().includes(trimmedText)
+        );
+        setFilteredEquipos(filtered);
+    };
+
+    const toggleSelectItem = (item: Equipos) => {
+        setSelectedItems(prev => {
+            const isSelected = prev.some(selected => selected.ID === item.ID);
+            return isSelected ? [] : [item];
+        });
+    };
+
+    const handleCalibrar = () => {
+        if (selectedItems.length > 0) {
+            const selectedEquipo = selectedItems[0];
+            navigation.navigate('CalibrarV12Screen', {
+                equipo: selectedEquipo.ID,
+                nomina: nomina
             });
-
-            if (!response.ok) throw new Error(`Error al guardar: ${response.statusText}`);
-            const data = await response.json();
-            console.log('Calibración guardada:', data);
-
-            const updateResponse = await fetch('http://10.0.2.2:3003/api/vernier', {
-                method: 'GET',
-            });
-
-            if (!updateResponse.ok) throw new Error('Error al actualizar la tabla');
-
-            const flexometrosData = await updateResponse.json();
-            console.log('Tabla de flexómetros actualizada:', flexometrosData);
-
-            Alert.alert('Éxito', 'Calibración registrada correctamente', [
-                {
-                    text: 'OK',
-                    onPress: () => navigation.navigate('FlexScreen', { nomina }),
-                },
-            ]);
-        } catch (error) {
-            console.error(' Error:', error);
-            Alert.alert('Error al guardar la calibración.');
         }
+    };
+
+    const renderItem = ({ item }: { item: Equipos }) => {
+        const isSelected = selectedItems.some(selected => selected.ID === item.ID);
+
+        return (
+            <TouchableOpacity
+                style={[styles.tableRow, isSelected && styles.selectedRow]}
+                onPress={() => toggleSelectItem(item)}
+            >
+                <Text style={styles.tableText}>{item.ID}</Text>
+            </TouchableOpacity>
+        );
     };
 
     return (
@@ -140,87 +101,41 @@ const Vernier12Screen: React.FC<Props> = ({ route }) => {
             resizeMode="cover"
             style={styles.container}
         >
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                style={styles.keyboardAvoiding}
-            >
-                <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <View style={styles.topContainer}>
-                        <Text style={styles.subtitle}>{nomina}</Text>
-                        <View style={styles.equipoRow}>
-                            <Text style={styles.title}>{equipo}</Text>
-                            <Image
-                                source={require('./assets/flex.png')}
-                                style={styles.equipoIcon}
-                                resizeMode="contain"
-                            />
-                        </View>
-                        <Text style={styles.tolerance}>Tolerancia: ± 0.62"</Text>
-                        <Text style={styles.labelDate}>Fecha: {dateNow}</Text>
+            <View style={styles.topContainer}>
+                <Text style={styles.userText}>{nomina}</Text>
+                <Text style={styles.title}>Vernier 12" </Text>
 
-                        <View style={[styles.dimensionContainer, { width: width * 0.8 }]}>
-                            {dimensiones.map((value, index) => (
-                                <View key={index} style={styles.dimensionRow}>
-                                    <Text style={styles.dimensionLabel}>Dimensión {index + 1}:</Text>
-                                    <TextInput
-                                        style={[
-                                            styles.inputDim,
-                                            (parseFloat(value) < tolerances[index].min || parseFloat(value) > tolerances[index].max) && { backgroundColor: '#f8d7da' },
-                                        ]}
-                                        value={value}
-                                        onChangeText={(text) => handleChangeDimension(index, text)}
-                                        keyboardType="numeric"
-                                    />
-                                </View>
-                            ))}
-                        </View>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        value={searchText}
+                        onChangeText={handleSearch}
+                        placeholder="Buscar equipo"
+                    />
+                </View>
 
-                        <Text style={styles.label}>Comentarios:</Text>
-                        <TextInput
-                            style={[styles.inputComent, { width: width * 0.9 }]}
-                            value={comentarios}
-                            onChangeText={setComentarios}
-                            placeholder="Escribe algún comentario..."
-                            multiline
-                        />
+                <FlatList
+                    data={filteredEquipos}
+                    keyExtractor={(item) => item.ID}
+                    renderItem={renderItem}
+                    style={{ width: '100%' }}
+                />
+            </View>
+            {selectedItems.length > 0 && (
+                <TouchableOpacity
+                    style={[styles.calibrarButton, selectedItems.length === 0 && styles.disabledButton]}
+                    onPress={handleCalibrar}
+                    disabled={selectedItems.length === 0}
+                >
+                    <Text style={styles.buttonText}>Calibrar equipo</Text>
+                </TouchableOpacity>
+            )}
 
-                        <Text style={styles.label}>Patrón de Verificación:</Text>
-                        <TextInput
-                            style={[styles.input, { width: width * 0.8 }]}
-                            value={patron}
-                            onChangeText={setPatron}
-                        />
-
-                        <Text style={styles.label}>Siguiente Calibración: {nextCalibration}</Text>
-
-                        <TouchableOpacity
-                            style={[styles.GuardarButton, !isFormValid() && styles.disabledButton]}
-                            onPress={handleGuardar}
-                            disabled={!isFormValid()}
-                        >
-                            <Text style={styles.buttonText}>Guardar calibracion</Text>
-                        </TouchableOpacity>
-                    </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
         </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
-    backgroundImage: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-    },
-    keyboardAvoiding: {
-        flex: 1,
-    },
-    scrollContent: {
-        padding: 20,
-        paddingBottom: 120,
-        flexGrow: 1,
-    },
     container: {
         flex: 1,
         padding: 20,
@@ -228,99 +143,59 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     topContainer: {
-        //  marginTop: 1,
+        marginTop: 10,
         alignItems: 'center',
         width: '100%',
     },
     title: {
         fontSize: 24,
-        fontFamily: 'Gayathri-Bold',
-    },
-    subtitle: {
-        fontSize: 12,
         fontFamily: 'Gayathri-Regular',
-    },
-    equipoRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-        marginTop: 2,
-    },
-    equipoIcon: {
-        width: 70,
-        height: 70,
-        marginLeft: 8,
-    },
-    tolerance: {
-        fontSize: 18,
-        color: '#333',
-        fontFamily: 'Gayathri-Regular',
-    },
-    label: {
-        fontSize: 16,
-        fontFamily: 'Gayathri-Bold',
-        marginTop: 5,
-        marginBottom: 4,
-    },
-    labelDate: {
-        fontSize: 16,
-        fontFamily: 'Gayathri-Bold',
-        marginTop: 10,
-        marginBottom: 4,
-    },
-    dimensionContainer: {
-        width: '100%',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        alignContent: 'center',
-        marginLeft: 10,
-    },
-    dimensionRow: {
-        width: '48%',
         marginBottom: 10,
+        color: '#333',
     },
-    dimensionLabel: {
-        fontSize: 14,
-        marginBottom: 4,
-        fontFamily: 'Gayathri-Bold',
-    },
-    inputDim: {
-        height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 8,
+    userText: {
+        fontSize: 12,
+        color: 'black',
+        marginBottom: 5,
         fontFamily: 'Gayathri-Regular',
-        textAlign: 'center',
-        fontSize: 14,
     },
-    inputComent: {
-        height: 100,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        fontFamily: 'Gayathri-Regular',
-        //   backgroundColor: 'white',
-        marginTop: 2,
-        textAlign: 'center',
-        fontSize: 14,
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 5,
+        width: '100%',
+        justifyContent: 'center'
     },
     input: {
-        height: 40,
-        borderColor: '#ccc',
+        width: '90%',
+        height: 50,
+        borderColor: '#c4c4c4',
+        backgroundColor: '#fff',
         borderWidth: 1,
+        paddingLeft: 10,
+        fontSize: 16,
         borderRadius: 5,
-        paddingHorizontal: 10,
-        fontFamily: 'Gayathri-Regular',
-        textAlign: 'center',
-        fontSize: 14,
+        fontFamily: 'Gayathri-Regular'
     },
-    GuardarButton: {
+    tableRow: {
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        width: '100%',
+        fontFamily: 'Gayathri-Regular',
+    },
+    tableText: {
+        fontSize: 18,
+        color: 'black',
+        fontFamily: 'Gayathri-Regular',
+    },
+    selectedRow: {
+        backgroundColor: '#cce7ff'
+    },
+    calibrarButton: {
         position: 'absolute',
-        bottom: -100,
+        bottom: 10,
         backgroundColor: '#2d5f90',
         paddingVertical: 15,
         paddingHorizontal: 25,
@@ -329,9 +204,9 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
-        width: '90%',
-        alignSelf: 'center',
+        width: '100%',
     },
+
     disabledButton: {
         backgroundColor: '#cccccc',
     },

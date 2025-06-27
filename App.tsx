@@ -10,7 +10,8 @@ import TransportadorScreen from './src/screens/TransportadorScreen';
 import Vernier6Screen from './src/screens/Vernier6Screen';
 import Vernier12Screen from './src/screens/Vernier12Screen';
 import CalibrarV6Screen from './src/screens/CalibrarV6Screen';
-import CalibrarV12Screen from './src/screens/Vernier12Screen'
+import CalibrarV12Screen from './src/screens/CalibrarV12Screen';
+import CalibrarTransportadorScreen from './src/screens/CalibrarTransportadorScreen';
 
 type RootStackParamList = {
   Login: undefined;
@@ -23,6 +24,7 @@ type RootStackParamList = {
   Vernier12Screen: { nomina: string, equipo: string };
   CalibrarV6Screen: { nomina: string, equipo: string };
   CalibrarV12Screen: { nomina: string, equipo: string };
+  CalibrarTransportadorScreen: { nomina: string, equipo: string}
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -79,6 +81,11 @@ const App: React.FC = () => {
         <Stack.Screen
           name="CalibrarV12Screen"
           component={CalibrarV12Screen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CalibrarTransportadorScreen"
+          component={CalibrarTransportadorScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
