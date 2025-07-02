@@ -37,6 +37,7 @@ const CalibrarV12Screen: React.FC<Props> = ({ route }) => {
         const next = moment().add(90, 'days');
         setDateNow(now.format('YYYY-MM-DD'));
         setNextCalibration(next.format('YYYY-MM'));
+        setPatron('I-CAL-002');
     }, []);
 
     const handleChangeDimension = (index: number, value: string) => {
@@ -96,7 +97,7 @@ const CalibrarV12Screen: React.FC<Props> = ({ route }) => {
         };
 
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/calibracionFlex', {
+            const response = await fetch('http://10.0.2.2:3003/api/calibracionVer12', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -106,19 +107,24 @@ const CalibrarV12Screen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://10.0.2.2:3003/api/flexometros', {
+            const updateResponse = await fetch('http://10.0.2.2:3003/api/vernier12', {
                 method: 'GET',
             });
 
             if (!updateResponse.ok) throw new Error('Error al actualizar la tabla');
 
             const flexometrosData = await updateResponse.json();
-            console.log('Tabla de flexómetros actualizada:', flexometrosData);
+            console.log('Tabla de Vernier 12 actualizada:', flexometrosData);
 
             Alert.alert('Éxito', 'Calibración registrada correctamente', [
                 {
                     text: 'OK',
-                    onPress: () => navigation.navigate('Vernier12Screen', { nomina }),
+                    onPress: () => {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Inicio' }],
+                        });
+                    }
                 },
             ]);
         } catch (error) {
@@ -135,7 +141,7 @@ const CalibrarV12Screen: React.FC<Props> = ({ route }) => {
                         <Text style={styles.subtitle}>{nomina}</Text>
                         <View style={styles.equipoRow}>
                             <Text style={styles.title}>{equipo}</Text>
-                            <Image source={require('./assets/vernier.png')} style={styles.equipoIcon} resizeMode="contain" />
+                            <Image source={require('./assets/Vernier12.png')} style={styles.equipoIcon} resizeMode="contain" />
                         </View>
                         <Text style={styles.tolerance}>Tolerancia: ± 0.001"</Text>
                         <Text style={styles.labelDate}>Fecha: {dateNow}</Text>
@@ -197,13 +203,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
-        padding: 20,
-        paddingBottom: 120,
+        padding: 5,
+        paddingBottom: 60,
         flexGrow: 1,
     },
     container: {
         flex: 1,
-        padding: 20,
+        padding: 10,
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
@@ -223,7 +229,7 @@ const styles = StyleSheet.create({
     equipoRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 8,
+        gap: 4,
         marginTop: 1,
     },
     equipoIcon: {
@@ -245,7 +251,7 @@ const styles = StyleSheet.create({
     labelDate: {
         fontSize: 16,
         fontFamily: 'Gayathri-Bold',
-        marginTop: 10,
+        marginTop: 7,
         marginBottom: 4,
     },
     dimensionContainer: {

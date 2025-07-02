@@ -9,6 +9,7 @@ import { RootStackParamList } from './App';
 import moment from 'moment';
 import { useNavigation } from '@react-navigation/native';
 
+
 type Props = StackScreenProps<RootStackParamList, 'CalibrarV6Screen'>;
 
 const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
@@ -37,7 +38,7 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
         const next = moment().add(90, 'days');
         setDateNow(now.format('YYYY-MM-DD'));
         setNextCalibration(next.format('YYYY-MM'));
-         setPatron('I-CAL-002');
+        setPatron('I-CAL-002');
     }, []);
 
     const handleChangeDimension = (index: number, value: string) => {
@@ -119,7 +120,12 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
             Alert.alert('Éxito', 'Calibración registrada correctamente', [
                 {
                     text: 'OK',
-                    onPress: () => navigation.navigate('Vernier6Screen', { nomina }),
+                    onPress: () => {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Inicio' }],
+                        });
+                    }
                 },
             ]);
         } catch (error) {
@@ -198,13 +204,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
-        padding: 20,
-        paddingBottom: 120,
+        padding: 5,
+        paddingBottom: 60,
         flexGrow: 1,
     },
     container: {
         flex: 1,
-        padding: 20,
+        padding: 10,
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
@@ -224,7 +230,7 @@ const styles = StyleSheet.create({
     equipoRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 8,
+        gap: 4,
         marginTop: 1,
     },
     equipoIcon: {
@@ -246,7 +252,7 @@ const styles = StyleSheet.create({
     labelDate: {
         fontSize: 16,
         fontFamily: 'Gayathri-Bold',
-        marginTop: 10,
+        marginTop: 7,
         marginBottom: 4,
     },
     dimensionContainer: {

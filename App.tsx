@@ -12,6 +12,10 @@ import Vernier12Screen from './src/screens/Vernier12Screen';
 import CalibrarV6Screen from './src/screens/CalibrarV6Screen';
 import CalibrarV12Screen from './src/screens/CalibrarV12Screen';
 import CalibrarTransportadorScreen from './src/screens/CalibrarTransportadorScreen';
+import CalibrarBasculaScreem from './src/screens/CalibrarBasculaScreen';
+import CalibrarMicroScreen from './src/screens/CalibrarMicroScreen';
+import OtrosScreen from './src/screens/OtrosScreen';
+import EspesorScreen from './src/screens/CalibrarEspesorScreen';
 
 type RootStackParamList = {
   Login: undefined;
@@ -24,7 +28,11 @@ type RootStackParamList = {
   Vernier12Screen: { nomina: string, equipo: string };
   CalibrarV6Screen: { nomina: string, equipo: string };
   CalibrarV12Screen: { nomina: string, equipo: string };
-  CalibrarTransportadorScreen: { nomina: string, equipo: string}
+  CalibrarTransportadorScreen: { nomina: string, equipo: string };
+  CalibrarBasculaScreen: { nomina: string, equipo: string };
+  CalibrarMicroScreen: { nomina: string, equipo: string };
+  CalibrarEspesorScreen: { nomina: string, equipo: string };
+  OtrosScreen: { nomina: string, equipo: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -41,6 +49,11 @@ const App: React.FC = () => {
         <Stack.Screen
           name="Inicio"
           component={InicioScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OtrosScreen"
+          component={OtrosScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -86,6 +99,21 @@ const App: React.FC = () => {
         <Stack.Screen
           name="CalibrarTransportadorScreen"
           component={CalibrarTransportadorScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CalibrarBasculaScreen"
+          component={CalibrarBasculaScreem}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CalibrarMicroScreen"
+          component={CalibrarMicroScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CalibrarEspesorScreen"
+          component={EspesorScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

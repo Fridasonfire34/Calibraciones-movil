@@ -9,36 +9,32 @@ import { RootStackParamList } from './App';
 import moment from 'moment';
 import { useNavigation } from '@react-navigation/native';
 
-type Props = StackScreenProps<RootStackParamList, 'CalibrarFScreen'>;
+type Props = StackScreenProps<RootStackParamList, 'CalibrarBasculaScreen'>;
 
-const CalibrarFScreen: React.FC<Props> = ({ route }) => {
+const CalibrarBasculaScreen: React.FC<Props> = ({ route }) => {
     const [dateNow, setDateNow] = useState('');
     const [nextCalibration, setNextCalibration] = useState('');
     const [estatus, setEstatus] = useState('OK');
-    const [dimensiones, setDimensiones] = useState(Array(7).fill(''));
+    const [dimensiones, setDimensiones] = useState(Array(3).fill(''));
     const [patron, setPatron] = useState('');
     const [comentarios, setComentarios] = useState('');
     const navigation = useNavigation();
-    const [dimensionesFuera, setDimensionesFuera] = useState<boolean[]>(Array(7).fill(false));
+    const [dimensionesFuera, setDimensionesFuera] = useState<boolean[]>(Array(3).fill(false));
     const { width, height } = useWindowDimensions();
     const { equipo, nomina } = route.params;
 
     const tolerances = [
-        { min: 1.38, max: 2.62 },
-        { min: 9.38, max: 10.62 },
-        { min: 19.38, max: 20.62 },
-        { min: 29.38, max: 30.62 },
-        { min: 39.38, max: 40.62 },
-        { min: 79.38, max: 80.62 },
-        { min: 119.38, max: 120.62 },
+        { min: 0.99, max: 1.01 },
+        { min: 1.99, max: 2.01 },
+        { min: 2.99, max: 3.01 }
     ];
 
     useEffect(() => {
         const now = moment();
-        const next = moment().add(90, 'days');
+        const next = moment().add(365, 'days');
         setDateNow(now.format('YYYY-MM-DD'));
         setNextCalibration(next.format('YYYY-MM'));
-        setPatron('I-CAL-001');
+        setPatron('I-CAL-014');
     }, []);
 
     const handleChangeDimension = (index: number, value: string) => {
@@ -52,7 +48,7 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
     };
 
     const handleGuardar = async () => {
-        const nuevasFuera = Array(7).fill(false);
+        const nuevasFuera = Array(3).fill(false);
         const fueraIndices: number[] = [];
 
         dimensiones.forEach((valor, index) => {
@@ -98,7 +94,7 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
         };
 
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/calibracionFlex', {
+            const response = await fetch('http://10.0.2.2:3003/api/calibracionBascula', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -107,15 +103,6 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
             if (!response.ok) throw new Error(`Error al guardar: ${response.statusText}`);
             const data = await response.json();
             console.log('Calibración guardada:', data);
-
-            const updateResponse = await fetch('http://10.0.2.2:3003/api/flexometros', {
-                method: 'GET',
-            });
-
-            if (!updateResponse.ok) throw new Error('Error al actualizar la tabla');
-
-            const flexometrosData = await updateResponse.json();
-            console.log('Tabla de flexómetros actualizada:', flexometrosData);
 
             Alert.alert('Éxito', 'Calibración registrada correctamente', [
                 {
@@ -142,47 +129,32 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
                         <Text style={styles.subtitle}>{nomina}</Text>
                         <View style={styles.equipoRow}>
                             <Text style={styles.title}>{equipo}</Text>
-                            <Image source={require('./assets/flex.png')} style={styles.equipoIcon} resizeMode="contain" />
+                            <Image source={require('./assets/bascula.png')} style={styles.equipoIcon} resizeMode="contain" />
                         </View>
-                        <Text style={styles.tolerance}>Tolerancia: ± 0.62"</Text>
+
+                        <Text style={styles.tolerance}>Tolerancia: ± 1 gr</Text>
                         <Text style={styles.labelDate}>Fecha: {dateNow}</Text>
 
                         <View style={[styles.dimensionContainer, { width: width * 0.8 }]}>
                             {dimensiones.map((value, index) => (
-                                index === 6 ? (
-                                    <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: 10 }}>
-                                        <View style={{ width: '48%' }}>
-                                            <Text style={styles.dimensionLabel}>Dimensión {index + 1}:</Text>
-                                            <TextInput
-                                                style={[
-                                                    styles.inputDim,
-                                                    (parseFloat(value) < tolerances[index].min || parseFloat(value) > tolerances[index].max) && { backgroundColor: '#f8d7da' },
-                                                ]}
-                                                value={value}
-                                                onChangeText={(text) => handleChangeDimension(index, text)}
-                                                keyboardType="numeric"
-                                            />
-                                        </View>
-                                        <View style={{ width: '48%' }}>
-                                            <Text style={styles.dimensionLabel}>Patrón de Verificación:</Text>
-                                            <Text style={styles.inputPatron}>{'I-CAL-001'}</Text>
-                                        </View>
-                                    </View>
-                                ) : (
-                                    <View key={index} style={styles.dimensionRow}>
-                                        <Text style={styles.dimensionLabel}>Dimensión {index + 1}:</Text>
-                                        <TextInput
-                                            style={[
-                                                styles.inputDim,
-                                                (parseFloat(value) < tolerances[index].min || parseFloat(value) > tolerances[index].max) && { backgroundColor: '#f8d7da' },
-                                            ]}
-                                            value={value}
-                                            onChangeText={(text) => handleChangeDimension(index, text)}
-                                            keyboardType="numeric"
-                                        />
-                                    </View>
-                                )
+                                <View key={index} style={styles.dimensionRow}>
+                                    <Text style={styles.dimensionLabel}>Peso {index + 1}:</Text>
+                                    <TextInput
+                                        style={[
+                                            styles.inputDim,
+                                            (parseFloat(value) < tolerances[index].min || parseFloat(value) > tolerances[index].max) && { backgroundColor: '#f8d7da' },
+                                        ]}
+                                        value={value}
+                                        onChangeText={(text) => handleChangeDimension(index, text)}
+                                        keyboardType="numeric"
+                                    />
+                                </View>
                             ))}
+                        </View>
+
+                        <View style={{ width: '48%' }}>
+                            <Text style={styles.dimensionLabel}>Patrón de Verificación:</Text>
+                            <Text style={styles.inputPatron}>{'I-CAL-014'}</Text>
                         </View>
 
                         <Text style={styles.label}>Comentarios:</Text>
@@ -197,14 +169,11 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
                         <Text style={styles.label}>Siguiente Calibración: {nextCalibration}</Text>
 
                         <TouchableOpacity
-                            style={[
-                                styles.GuardarButton,
-                                !isFormValid() && styles.disabledButton
-                            ]}
+                            style={[styles.GuardarButton, !isFormValid() && styles.disabledButton]}
                             onPress={handleGuardar}
                             disabled={!isFormValid()}
                         >
-                            <Text style={styles.buttonText}>Guardar calibración</Text>
+                            <Text style={styles.buttonText}>Guardar calibracion</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -223,13 +192,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
-        padding: 2,
+        padding: 5,
         paddingBottom: 120,
         flexGrow: 1,
     },
     container: {
         flex: 1,
-        padding: 2,
+        padding: 5,
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
@@ -253,8 +222,8 @@ const styles = StyleSheet.create({
         marginTop: 1,
     },
     equipoIcon: {
-        width: 70,
-        height: 70,
+        width: 90,
+        height: 90,
         marginLeft: 8,
     },
     tolerance: {
@@ -362,4 +331,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CalibrarFScreen;
+export default CalibrarBasculaScreen;

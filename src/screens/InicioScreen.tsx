@@ -9,7 +9,8 @@ type RootStackParamList = {
     Inicio: undefined;
     FlexScreen: { nomina: string };
     VernScreen: { nomina: string };
-    TransportadorScreen: { nomina: string}
+    TransportadorScreen: { nomina: string }
+    OtrosScreen: { nomina: string }
 };
 
 type InicioScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Inicio'>;
@@ -75,13 +76,28 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
         }
     };
 
+    const handleOtros = async () => {
+        try {
+            const response = await fetch('http://10.0.2.2:3003/api/historicoOtros');
+            if (!response.ok) {
+                throw new Error('No se pudo procesar el histórico');
+            }
+
+            navigation.navigate('OtrosScreen', { nomina: user.Nomina });
+
+        } catch (error) {
+            console.error('Error al procesar el histórico:', error);
+            Alert.alert('Hubo un problema al procesar el histórico. Intenta nuevamente.');
+        }
+    };
+
     return (
         <ImageBackground
             source={require('./assets/cats.jpg')}
             style={styles.container}
         >
             <View style={styles.container}>
-                <Text style={styles.welcomeText}> {user.Nomina}     {user.Nombre}</Text>
+                <Text style={styles.welcomeText}>{user.Nomina}     {user.Nombre}</Text>
 
                 <View style={styles.header}>
                     <Text style={styles.title}>Nueva Calibración</Text>
@@ -89,36 +105,46 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
 
                 <Text style={styles.subtitle}>Selecciona el equipo</Text>
 
-                <View>
-                    <TouchableOpacity style={styles.optionButton}
-                        onPress={handleFlex}>
-                        <Image
-                            source={require('./assets/flex.png')}
-                            style={styles.buttonImage}
-                            resizeMode="contain"
-                        />
-                        <Text style={styles.buttonText}>Flexómetro</Text>
-                    </TouchableOpacity>
+                <View style={styles.buttonGroup}>
+                    <View style={styles.row}>
+                        <TouchableOpacity style={styles.optionButton} onPress={handleFlex}>
+                            <Image
+                                source={require('./assets/flex.png')}
+                                style={styles.buttonImage}
+                                resizeMode="contain"
+                            />
+                            <Text style={styles.buttonText}>Flexómetro</Text>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.optionButton}
-                        onPress={handleVer}>
-                        <Image
-                            source={require('./assets/vernier.png')}
-                            style={styles.buttonImage}
-                            resizeMode="contain"
-                        />
-                        <Text style={styles.buttonText}>Vernier</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.optionButton} onPress={handleVer}>
+                            <Image
+                                source={require('./assets/vernier.png')}
+                                style={styles.buttonImage}
+                                resizeMode="contain"
+                            />
+                            <Text style={styles.buttonText}>Vernier</Text>
+                        </TouchableOpacity>
+                    </View>
 
-                    <TouchableOpacity style={styles.optionButton}
-                        onPress={handleTrans}>
-                        <Image
-                            source={require('./assets/Goniometro.png')}
-                            style={styles.buttonImageG}
-                            resizeMode="contain"
-                        />
-                        <Text style={styles.buttonText}>Transportador</Text>
-                    </TouchableOpacity>
+                    <View style={styles.row}>
+                        <TouchableOpacity style={styles.optionButton} onPress={handleTrans}>
+                            <Image
+                                source={require('./assets/Transportador.png')}
+                                style={styles.buttonImageG}
+                                resizeMode="contain"
+                            />
+                            <Text style={styles.buttonText}>Transportador</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.optionButton} onPress={handleOtros}>
+                            <Image
+                                source={require('./assets/bascula.png')}
+                                style={styles.buttonImageG}
+                                resizeMode="contain"
+                            />
+                            <Text style={styles.buttonText}>Otros</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </ImageBackground>
@@ -131,7 +157,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingTop: 5,
-        paddingHorizontal: 1,
+        //  paddingHorizontal: 1,
     },
     header: {
         alignItems: 'center',
@@ -141,7 +167,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize: 30,
         color: '#333',
-        fontFamily: 'Gayathri-Bold'
+        fontFamily: 'Gayathri-Bold',
     },
     subtitle: {
         fontSize: 22,
@@ -149,36 +175,35 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         marginLeft: 50,
         marginBottom: 1,
-        fontFamily: 'Gayathri-Regular'
+        fontFamily: 'Gayathri-Regular',
     },
     welcomeText: {
         fontSize: 12,
         color: 'black',
         marginBottom: 1,
         marginTop: 2,
-        fontFamily: 'Gayathri-Regular'
+        fontFamily: 'Gayathri-Regular',
     },
-    loadingText: {
-        fontSize: 18,
-        textAlign: 'center',
-        color: '#333',
+    buttonGroup: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
     },
-    image: {
-        width: '60%',
-        height: '25%',
-        aspectRatio: 1,
-        marginTop: 200,
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        flex: 1,
     },
     optionButton: {
-        width: 400,
-        height: '29%',
+        flex: 1,
         backgroundColor: 'rgba(229, 232, 234)',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 3,
-        marginHorizontal: 15,
-        marginBottom: 10
+        elevation: 2,
+        marginHorizontal: 1,
     },
     buttonText: {
         color: 'black',
@@ -186,12 +211,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Gayathri-Regular',
     },
     buttonImage: {
-        width: '100%',
-        height: '80%',
+        width: '70%',
+        height: '60%',
         borderRadius: 10,
     },
     buttonImageG: {
-        width: '100%',
+        width: '90%',
         height: '70%',
         borderRadius: 10,
     },

@@ -9,9 +9,9 @@ import { RootStackParamList } from './App';
 import moment from 'moment';
 import { useNavigation } from '@react-navigation/native';
 
-type Props = StackScreenProps<RootStackParamList, 'CalibrarFScreen'>;
+type Props = StackScreenProps<RootStackParamList, 'CalibrarMicroScreen'>;
 
-const CalibrarFScreen: React.FC<Props> = ({ route }) => {
+const CalibrarMicroScreen: React.FC<Props> = ({ route }) => {
     const [dateNow, setDateNow] = useState('');
     const [nextCalibration, setNextCalibration] = useState('');
     const [estatus, setEstatus] = useState('OK');
@@ -24,21 +24,21 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
     const { equipo, nomina } = route.params;
 
     const tolerances = [
-        { min: 1.38, max: 2.62 },
-        { min: 9.38, max: 10.62 },
-        { min: 19.38, max: 20.62 },
-        { min: 29.38, max: 30.62 },
-        { min: 39.38, max: 40.62 },
-        { min: 79.38, max: 80.62 },
-        { min: 119.38, max: 120.62 },
+        { min: 0.624, max: 0.6255 },
+        { min: 0.0995, max: 0.1005 },
+        { min: 0.1245, max: 0.1255 },
+        { min: 0.1995, max: 0.2005 },
+        { min: 0.2495, max: 0.2505 },
+        { min: 0.2995, max: 0.3005 },
+        { min: 0.5005, max: 0.5005 },
     ];
 
     useEffect(() => {
         const now = moment();
-        const next = moment().add(90, 'days');
+        const next = moment().add(365, 'days');
         setDateNow(now.format('YYYY-MM-DD'));
         setNextCalibration(next.format('YYYY-MM'));
-        setPatron('I-CAL-001');
+        setPatron('I-CAL-052');
     }, []);
 
     const handleChangeDimension = (index: number, value: string) => {
@@ -98,7 +98,7 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
         };
 
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/calibracionFlex', {
+            const response = await fetch('http://10.0.2.2:3003/api/calibracionMicro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -108,14 +108,14 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://10.0.2.2:3003/api/flexometros', {
+            const updateResponse = await fetch('http://10.0.2.2:3003/api/Otros', {
                 method: 'GET',
             });
 
             if (!updateResponse.ok) throw new Error('Error al actualizar la tabla');
 
             const flexometrosData = await updateResponse.json();
-            console.log('Tabla de flexómetros actualizada:', flexometrosData);
+            console.log('Tabla de Equipos actualizada:', flexometrosData);
 
             Alert.alert('Éxito', 'Calibración registrada correctamente', [
                 {
@@ -142,9 +142,9 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
                         <Text style={styles.subtitle}>{nomina}</Text>
                         <View style={styles.equipoRow}>
                             <Text style={styles.title}>{equipo}</Text>
-                            <Image source={require('./assets/flex.png')} style={styles.equipoIcon} resizeMode="contain" />
+                            <Image source={require('./assets/micrometro.png')} style={styles.equipoIcon} resizeMode="contain" />
                         </View>
-                        <Text style={styles.tolerance}>Tolerancia: ± 0.62"</Text>
+                        <Text style={styles.tolerance}>Tolerancia: ± 0.0005"</Text>
                         <Text style={styles.labelDate}>Fecha: {dateNow}</Text>
 
                         <View style={[styles.dimensionContainer, { width: width * 0.8 }]}>
@@ -165,7 +165,7 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
                                         </View>
                                         <View style={{ width: '48%' }}>
                                             <Text style={styles.dimensionLabel}>Patrón de Verificación:</Text>
-                                            <Text style={styles.inputPatron}>{'I-CAL-001'}</Text>
+                                            <Text style={styles.inputPatron}>{'I-CAL-052'}</Text>
                                         </View>
                                     </View>
                                 ) : (
@@ -362,4 +362,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CalibrarFScreen;
+export default CalibrarMicroScreen;

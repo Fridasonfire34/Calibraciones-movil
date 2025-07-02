@@ -44,8 +44,8 @@ const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
     };
 
     const isFormValid = () => {
-    return dimensiones.every((d) => d.trim() !== '');
-};
+        return dimensiones.every((d) => d.trim() !== '');
+    };
 
     const handleGuardar = async () => {
         const nuevasFuera = Array(3).fill(false);
@@ -116,7 +116,12 @@ const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
             Alert.alert('Éxito', 'Calibración registrada correctamente', [
                 {
                     text: 'OK',
-                    onPress: () => navigation.navigate('TransportadorScreen', { nomina }),
+                    onPress: () => {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Inicio' }],
+                        });
+                    }
                 },
             ]);
         } catch (error) {
@@ -133,7 +138,7 @@ const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
                         <Text style={styles.subtitle}>{nomina}</Text>
                         <View style={styles.equipoRow}>
                             <Text style={styles.title}>{equipo}</Text>
-                            <Image source={require('./assets/Goniometro.png')} style={styles.equipoIcon} resizeMode="contain" />
+                            <Image source={require('./assets/Transportador.png')} style={styles.equipoIcon} resizeMode="contain" />
                         </View>
                         <Text style={styles.tolerance}>Tolerancia: ± 1°</Text>
                         <Text style={styles.labelDate}>Fecha: {dateNow}</Text>

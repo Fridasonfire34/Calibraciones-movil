@@ -5,21 +5,21 @@ import {
     StyleSheet,
     TouchableOpacity,
     ImageBackground,
-    Alert,
     TextInput,
     FlatList
 } from 'react-native';
 import axios from 'axios';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from './App';
+import { Alert } from 'react-native';
 
-type Props = StackScreenProps<RootStackParamList, 'TransportadorScreen'>;
+type Props = StackScreenProps<RootStackParamList, 'OtrosScreen'>;
 
 interface Equipos {
     ID: string;
 }
 
-const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
+const OtrosScreen: React.FC<Props> = ({ route, navigation }) => {
     const { nomina } = route.params;
 
     const [equipos, setEquipos] = useState<Equipos[]>([]);
@@ -33,7 +33,7 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
         const fetchEquipos = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://10.0.2.2:3003/api/transportador');
+                const response = await axios.get('http://10.0.2.2:3003/api/Otros');
                 setEquipos(response.data);
                 setFilteredEquipos(response.data);
             } catch (error: any) {
@@ -72,13 +72,29 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
         });
     };
 
-    const handleCalibrar = async () => {
+    const handleCalibrar = () => {
+        if (selectedItems.length > 0) {
+            const selectedID = selectedItems[0].ID;
+
+            if (selectedID === 'I-CAL-006') {
+                handleCalibrarEspesor();
+            } else if (selectedID === 'I-CAL-014') {
+                handleCalibrarBascula();
+            } else if (selectedID === 'I-CAL-052') {
+                handleCalibrarMicro();
+            } else {
+                Alert.alert('Equipo no reconocido', `No hay una acción definida para el equipo: ${selectedID}`);
+            }
+        }
+    };
+
+    const handleCalibrarEspesor = async () => {
         if (selectedItems.length === 0) return;
 
         const selectedEquipo = selectedItems[0];
 
         try {
-            const response = await axios.get(`http://10.0.2.2:3003/api/transportador/${selectedEquipo.ID}`);
+            const response = await axios.get(`http://10.0.2.2:3003/api/Otros/${selectedEquipo.ID}`);
             const siguienteCalibracion = response.data["Siguiente Calibracion"];
 
             if (siguienteCalibracion) {
@@ -99,7 +115,7 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
                             {
                                 text: 'Calibrar Equipo',
                                 onPress: () => {
-                                    navigation.navigate('CalibrarTransportadorScreen', {
+                                    navigation.navigate('CalibrarEspesorScreen', {
                                         equipo: selectedEquipo.ID,
                                         nomina: nomina,
                                     });
@@ -111,7 +127,99 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
                 }
             }
 
-            navigation.navigate('CalibrarTransportadorScreen', {
+            navigation.navigate('CalibrarEspesorScreen', {
+                equipo: selectedEquipo.ID,
+                nomina: nomina,
+            });
+        } catch (error) {
+            console.error('Error al verificar la calibración:', error);
+            Alert.alert('Error', 'No se pudo verificar la fecha de calibración.');
+        }
+    };
+
+    const handleCalibrarMicro = async () => {
+        if (selectedItems.length === 0) return;
+
+        const selectedEquipo = selectedItems[0];
+
+        try {
+            const response = await axios.get(`http://10.0.2.2:3003/api/Otros/${selectedEquipo.ID}`);
+            const siguienteCalibracion = response.data["Siguiente Calibracion"];
+
+            if (siguienteCalibracion) {
+                const fechaCalibracion = new Date(siguienteCalibracion);
+                const fechaHoy = new Date();
+
+                if (fechaCalibracion > fechaHoy) {
+                    const formattedDate = fechaCalibracion.toLocaleDateString('es-MX');
+
+                    Alert.alert(
+                        'Calibración programada',
+                        `La calibración programada de este equipo es en: ${formattedDate}. Aún no es necesario calibrarlo.`,
+                        [
+                            { text: 'OK', style: 'cancel' },
+                            {
+                                text: 'Calibrar Equipo',
+                                onPress: () => {
+                                    navigation.navigate('CalibrarMicroScreen', {
+                                        equipo: selectedEquipo.ID,
+                                        nomina: nomina,
+                                    });
+                                },
+                            },
+                        ]
+                    );
+                    return;
+                }
+            }
+
+            navigation.navigate('CalibrarMicroScreen', {
+                equipo: selectedEquipo.ID,
+                nomina: nomina,
+            });
+        } catch (error) {
+            console.error('Error al verificar la calibración:', error);
+            Alert.alert('Error', 'No se pudo verificar la fecha de calibración.');
+        }
+    };
+
+    const handleCalibrarBascula = async () => {
+        if (selectedItems.length === 0) return;
+
+        const selectedEquipo = selectedItems[0];
+
+        try {
+            const response = await axios.get(`http://10.0.2.2:3003/api/Otros/${selectedEquipo.ID}`);
+            const siguienteCalibracion = response.data["Siguiente Calibracion"];
+
+            if (siguienteCalibracion) {
+                const fechaCalibracion = new Date(siguienteCalibracion);
+                const fechaHoy = new Date();
+
+                if (fechaCalibracion > fechaHoy) {
+                    const formattedDate = fechaCalibracion.toLocaleDateString('es-MX');
+
+                    Alert.alert(
+                        'Calibración programada',
+                        `La calibración programada de este equipo es en: ${formattedDate}. Aún no es necesario calibrarlo.`,
+                        [
+                            { text: 'OK', style: 'cancel' },
+                            {
+                                text: 'Calibrar Equipo',
+                                onPress: () => {
+                                    navigation.navigate('CalibrarBasculaScreen', {
+                                        equipo: selectedEquipo.ID,
+                                        nomina: nomina,
+                                    });
+                                },
+                            },
+                        ]
+                    );
+                    return;
+                }
+            }
+
+            navigation.navigate('CalibrarBasculaScreen', {
                 equipo: selectedEquipo.ID,
                 nomina: nomina,
             });
@@ -142,7 +250,7 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
         >
             <View style={styles.topContainer}>
                 <Text style={styles.userText}>{nomina}</Text>
-                <Text style={styles.title}>Transportadores</Text>
+                <Text style={styles.title}>Otros Equipos </Text>
 
                 <View style={styles.inputContainer}>
                     <TextInput
@@ -162,14 +270,12 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
             </View>
             {selectedItems.length > 0 && (
                 <TouchableOpacity
-                    style={[styles.calibrarButton, selectedItems.length === 0 && styles.disabledButton]}
+                    style={styles.calibrarButton}
                     onPress={handleCalibrar}
-                    disabled={selectedItems.length === 0}
                 >
                     <Text style={styles.buttonText}>Calibrar equipo</Text>
                 </TouchableOpacity>
             )}
-
         </ImageBackground>
     );
 };
@@ -182,14 +288,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     topContainer: {
-        marginTop: 1,
+        marginTop: 2,
         alignItems: 'center',
         width: '100%',
     },
     title: {
         fontSize: 24,
         fontFamily: 'Gayathri-Regular',
-        marginBottom: 5,
+        marginBottom: 10,
         color: '#333',
     },
     userText: {
@@ -201,7 +307,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 10,
+        marginVertical: 5,
         width: '100%',
         justifyContent: 'center'
     },
@@ -257,4 +363,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TransportadorScreen;
+export default OtrosScreen;

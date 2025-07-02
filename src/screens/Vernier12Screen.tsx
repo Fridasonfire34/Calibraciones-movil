@@ -72,13 +72,52 @@ const Vernier12Screen: React.FC<Props> = ({ route, navigation }) => {
         });
     };
 
-    const handleCalibrar = () => {
-        if (selectedItems.length > 0) {
-            const selectedEquipo = selectedItems[0];
+    const handleCalibrar = async () => {
+        if (selectedItems.length === 0) return;
+
+        const selectedEquipo = selectedItems[0];
+
+        try {
+            const response = await axios.get(`http://10.0.2.2:3003/api/vernier12/${selectedEquipo.ID}`);
+            const siguienteCalibracion = response.data["Siguiente Calibracion"];
+
+            if (siguienteCalibracion) {
+                const fechaCalibracion = new Date(siguienteCalibracion);
+                const fechaHoy = new Date();
+
+                if (fechaCalibracion > fechaHoy) {
+                    const formattedDate = fechaCalibracion.toLocaleDateString('es-MX', {
+                        year: 'numeric',
+                        month: 'long'
+                    });
+
+                    Alert.alert(
+                        'Calibración programada',
+                        `La calibración programada de este equipo es en: ${formattedDate}. Aún no es necesario calibrarlo.`,
+                        [
+                            { text: 'OK', style: 'cancel' },
+                            {
+                                text: 'Calibrar Equipo',
+                                onPress: () => {
+                                    navigation.navigate('CalibrarV12Screen', {
+                                        equipo: selectedEquipo.ID,
+                                        nomina: nomina,
+                                    });
+                                },
+                            },
+                        ]
+                    );
+                    return;
+                }
+            }
+
             navigation.navigate('CalibrarV12Screen', {
                 equipo: selectedEquipo.ID,
-                nomina: nomina
+                nomina: nomina,
             });
+        } catch (error) {
+            console.error('Error al verificar la calibración:', error);
+            Alert.alert('Error', 'No se pudo verificar la fecha de calibración.');
         }
     };
 
@@ -138,12 +177,12 @@ const Vernier12Screen: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        padding: 2,
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
     topContainer: {
-        marginTop: 10,
+        marginTop: 2,
         alignItems: 'center',
         width: '100%',
     },
