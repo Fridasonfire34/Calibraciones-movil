@@ -9,7 +9,7 @@ import {
     Animated,
     Image
 } from 'react-native';
-import logo from './assets/TMP_2-removebg-preview.png';
+import logo from './assets/tm-logo-opacity.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -126,7 +126,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             style={styles.container}
         >
             <View style={styles.header}>
-                <Text style={styles.title}>Calibraciones Móvil</Text>
+                <Text style={styles.title}>Calibraciones</Text>
             </View>
 
             <Text style={styles.subtitle}>Login</Text>
@@ -162,7 +162,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                     <Text style={styles.buttonText}>→</Text>
                 </TouchableOpacity>
             </View>
-            <Image style={{ marginTop: 50 }} source={logo} />
+            <Image style={{ marginTop: 50, width: 200, height: 50 }} source={logo} />
         </ImageBackground>
     );
 };
@@ -225,7 +225,8 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 30,
         color: '#fff',
-        marginBottom: 15
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
 });

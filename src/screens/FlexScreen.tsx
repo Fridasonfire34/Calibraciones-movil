@@ -137,7 +137,7 @@ const FlexScreen: React.FC<Props> = ({ route, navigation }) => {
 
     return (
         <ImageBackground
-            source={require('./assets/cats.jpg')}
+            source={require('./assets/BG6.jpg')}
             resizeMode="cover"
             style={styles.container}
         >
@@ -153,24 +153,30 @@ const FlexScreen: React.FC<Props> = ({ route, navigation }) => {
                         placeholder="Buscar equipo"
                     />
                 </View>
-
-                <FlatList
-                    data={filteredEquipos}
-                    keyExtractor={(item) => item.ID}
-                    renderItem={renderItem}
-                    style={{ width: '100%' }}
-                />
             </View>
-            {selectedItems.length > 0 && (
-                <TouchableOpacity
-                    style={[styles.calibrarButton, selectedItems.length === 0 && styles.disabledButton]}
-                    onPress={handleCalibrar}
-                    disabled={selectedItems.length === 0}
-                >
-                    <Text style={styles.buttonText}>Calibrar equipo</Text>
-                </TouchableOpacity>
-            )}
 
+            <View style={styles.contentContainer}>
+                <View style={styles.listContainer}>
+                    <FlatList
+                        data={filteredEquipos}
+                        keyExtractor={(item) => item.ID}
+                        renderItem={renderItem}
+                        style={{ width: '100%' }}
+                    />
+                </View>
+
+                {/* Botón fijo al fondo */}
+                {selectedItems.length > 0 && (
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.calibrarButton}
+                            onPress={handleCalibrar}
+                        >
+                            <Text style={styles.buttonText}>Calibrar equipo</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </View>
         </ImageBackground>
     );
 };
@@ -178,33 +184,34 @@ const FlexScreen: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 5,
+        padding: 2,
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
     topContainer: {
-        marginTop: 10,
+        marginTop: 1,
         alignItems: 'center',
         width: '100%',
     },
     title: {
         fontSize: 24,
         fontFamily: 'Gayathri-Regular',
-        marginBottom: 10,
+        marginBottom: 2,
         color: '#333',
     },
     userText: {
         fontSize: 12,
         color: 'black',
-        marginBottom: 5,
+        marginBottom: 3,
         fontFamily: 'Gayathri-Regular',
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 10,
-        width: '100%',
-        justifyContent: 'center'
+        width: '90%',
+        justifyContent: 'center',
+        marginBottom: 5
     },
     input: {
         width: '90%',
@@ -231,12 +238,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Gayathri-Regular',
     },
     selectedRow: {
-        backgroundColor: '#cce7ff'
+        backgroundColor: '#b5d0e7ff'
     },
     calibrarButton: {
         position: 'absolute',
         bottom: 10,
-        backgroundColor: '#2d5f90',
+        backgroundColor: '#0d5ed1',
         paddingVertical: 15,
         paddingHorizontal: 25,
         borderRadius: 10,
@@ -244,7 +251,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
-        width: '100%',
+        width: '90%',
     },
 
     disabledButton: {
@@ -256,6 +263,23 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'Gayathri-Regular',
     },
+    contentContainer: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'space-between',
+    },
+
+    listContainer: {
+        flex: 0.9,
+        width: '100%',
+    },
+    buttonContainer: {
+        flex: 0.1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+    },
+
 });
 
 export default FlexScreen;

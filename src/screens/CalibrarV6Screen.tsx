@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     GuardarButton: {
         position: 'absolute',
         bottom: -100,
-        backgroundColor: '#2d5f90',
+        backgroundColor: '#0d5ed1',
         paddingVertical: 15,
         paddingHorizontal: 25,
         borderRadius: 10,

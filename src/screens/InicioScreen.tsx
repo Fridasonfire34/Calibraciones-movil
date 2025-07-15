@@ -93,7 +93,7 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
 
     return (
         <ImageBackground
-            source={require('./assets/cats.jpg')}
+            source={require('./assets/BG6-New.jpg')}
             style={styles.container}
         >
             <View style={styles.container}>
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: 5,
+        paddingTop: 1,
         //  paddingHorizontal: 1,
     },
     header: {
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
         marginBottom: 1,
     },
     title: {
-        marginTop: 10,
+        marginTop: 3,
         fontSize: 30,
         color: '#333',
         fontFamily: 'Gayathri-Bold',
@@ -181,7 +181,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: 'black',
         marginBottom: 1,
-        marginTop: 2,
         fontFamily: 'Gayathri-Regular',
     },
     buttonGroup: {

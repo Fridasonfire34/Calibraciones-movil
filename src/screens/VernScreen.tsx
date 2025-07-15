@@ -75,7 +75,7 @@ const VernScreen: React.FC<Props> = ({ navigation }) => {
 
     return (
         <ImageBackground
-            source={require('./assets/cats.jpg')}
+            source={require('./assets/BG6.jpg')}
             style={styles.container}
         >
             <View style={styles.container}>
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: 5,
+        paddingTop: 2,
         paddingHorizontal: 1,
     },
     header: {
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
         marginBottom: 1,
     },
     title: {
-        marginTop: 5,
+        marginTop: 1,
         fontSize: 30,
         color: '#333',
         fontFamily: 'Gayathri-Bold'

@@ -135,7 +135,7 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
     };
 
     return (
-        <ImageBackground source={require('./assets/cats.jpg')} resizeMode="cover" style={styles.container}>
+        <ImageBackground source={require('./assets/BG6.jpg')} resizeMode="cover" style={styles.container}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.keyboardAvoiding}>
                 <ScrollView contentContainerStyle={styles.scrollContent}>
                     <View style={styles.topContainer}>
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     GuardarButton: {
         position: 'absolute',
         bottom: -100,
-        backgroundColor: '#2d5f90',
+        backgroundColor: '#0d5ed1',
         paddingVertical: 15,
         paddingHorizontal: 25,
         borderRadius: 10,

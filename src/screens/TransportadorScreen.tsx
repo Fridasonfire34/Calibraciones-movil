@@ -136,7 +136,7 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
 
     return (
         <ImageBackground
-            source={require('./assets/cats.jpg')}
+            source={require('./assets/BG6.jpg')}
             resizeMode="cover"
             style={styles.container}
         >
@@ -230,12 +230,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Gayathri-Regular',
     },
     selectedRow: {
-        backgroundColor: '#cce7ff'
+        backgroundColor: '#b5d0e7ff'
     },
     calibrarButton: {
         position: 'absolute',
         bottom: 10,
-        backgroundColor: '#2d5f90',
+        backgroundColor: '#0d5ed1',
         paddingVertical: 15,
         paddingHorizontal: 25,
         borderRadius: 10,
