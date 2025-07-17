@@ -152,24 +152,30 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
                         placeholder="Buscar equipo"
                     />
                 </View>
-
-                <FlatList
-                    data={filteredEquipos}
-                    keyExtractor={(item) => item.ID}
-                    renderItem={renderItem}
-                    style={{ width: '100%' }}
-                />
             </View>
-            {selectedItems.length > 0 && (
-                <TouchableOpacity
-                    style={[styles.calibrarButton, selectedItems.length === 0 && styles.disabledButton]}
-                    onPress={handleCalibrar}
-                    disabled={selectedItems.length === 0}
-                >
-                    <Text style={styles.buttonText}>Calibrar equipo</Text>
-                </TouchableOpacity>
-            )}
 
+            <View style={styles.contentContainer}>
+                <View style={styles.listContainer}>
+                    <FlatList
+                        data={filteredEquipos}
+                        keyExtractor={(item) => item.ID}
+                        renderItem={renderItem}
+                        style={{ width: '100%' }}
+                    />
+                </View>
+
+                {/* Botón fijo al fondo */}
+                {selectedItems.length > 0 && (
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.calibrarButton}
+                            onPress={handleCalibrar}
+                        >
+                            <Text style={styles.buttonText}>Calibrar equipo</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </View>
         </ImageBackground>
     );
 };
@@ -189,21 +195,22 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontFamily: 'Gayathri-Regular',
-        marginBottom: 5,
+        marginBottom: 2,
         color: '#333',
     },
     userText: {
         fontSize: 12,
         color: 'black',
-        marginBottom: 5,
+        marginBottom: 3,
         fontFamily: 'Gayathri-Regular',
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 10,
-        width: '100%',
-        justifyContent: 'center'
+        width: '90%',
+        justifyContent: 'center',
+        marginBottom: 5
     },
     input: {
         width: '90%',
@@ -243,7 +250,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
-        width: '100%',
+        width: '90%',
     },
 
     disabledButton: {
@@ -255,6 +262,23 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'Gayathri-Regular',
     },
+    contentContainer: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'space-between',
+    },
+
+    listContainer: {
+        flex: 0.9,
+        width: '100%',
+    },
+    buttonContainer: {
+        flex: 0.1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+    },
+
 });
 
 export default TransportadorScreen;

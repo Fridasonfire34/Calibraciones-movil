@@ -200,13 +200,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
-        padding: 20,
-        paddingBottom: 120,
+        padding: 5,
+        paddingBottom: 60,
         flexGrow: 1,
     },
     container: {
         flex: 1,
-        padding: 20,
+        padding: 10,
         justifyContent: 'flex-start',
         alignItems: 'center',
     },

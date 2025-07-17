@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     ImageBackground,
     Animated,
-    Image
+    Image,
+    Alert
 } from 'react-native';
 import logo from './assets/tm-logo-opacity.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -30,6 +31,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     const [error, setError] = useState('');
     const [focusNomina, setFocusNomina] = useState(false);
     const [focusPassword, setFocusPassword] = useState(false);
+    const passwordRef = useRef<TextInput>(null);
 
     const animNomina = useRef(new Animated.Value(nomina ? 1 : 0)).current;
     const animPassword = useRef(new Animated.Value(password ? 1 : 0)).current;
@@ -109,13 +111,16 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 setPassword('');
 
                 navigation.navigate('Inicio');
+            } else if (response.status === 401) {
+                const errorData = await response.json();
+                Alert.alert(errorData.message || 'Credenciales incorrectas', 'El usuario o la contraseña son incorrectos');
             } else {
                 const errorData = await response.json();
-                setError(errorData.message || 'Error en el servidor');
+                Alert.alert(errorData.message || 'Error en el servidor', 'No hay conexion, favor de reportarlo');
             }
         } catch (err) {
             console.log("Error:", err);
-            setError('Error de conexión al servidor');
+            Alert.alert('No se pudo conectar al servidor. Revisa tu conexión.');
         }
     };
 
@@ -141,19 +146,21 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                         onFocus={() => handleFocus('nomina')}
                         onBlur={() => handleBlur('nomina')}
                         placeholder={focusNomina ? '' : 'Nómina'}
+                        onSubmitEditing={() => passwordRef?.current?.focus()}
                     />
                 </View>
-
 
                 <View style={{ width: '95%', marginBottom: 20 }}>
                     <Animated.Text style={getLabelStyle(animPassword)}>Password</Animated.Text>
                     <TextInput
                         style={styles.input}
                         value={password}
+                        ref={passwordRef}
                         onChangeText={setPassword}
                         onFocus={() => handleFocus('password')}
                         onBlur={() => handleBlur('password')}
                         placeholder={focusPassword ? '' : 'Password'}
+                        onSubmitEditing={handleLogin}
                         secureTextEntry
                     />
                 </View>

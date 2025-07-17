@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     },
     buttonGroup: {
         flex: 1,
-        width: '100%',
+        //width: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
     },
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
-        flex: 1,
+        flex: 2,
     },
     optionButton: {
         flex: 1,
