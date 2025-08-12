@@ -92,7 +92,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         try {
             setError('');
 
-            const response = await fetch('http://192.168.16.146:3003/api/calibraciones/login', {
+            const response = await fetch('http://192.168.16.146:3002/api/calibraciones/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

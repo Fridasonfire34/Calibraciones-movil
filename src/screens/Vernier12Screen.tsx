@@ -33,7 +33,7 @@ const Vernier12Screen: React.FC<Props> = ({ route, navigation }) => {
         const fetchEquipos = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://192.168.16.146:3003/api/calibraciones/vernier12');
+                const response = await axios.get('http://192.168.16.146:3002/api/calibraciones/vernier12');
                 setEquipos(response.data);
                 setFilteredEquipos(response.data);
             } catch (error: any) {
@@ -78,7 +78,7 @@ const Vernier12Screen: React.FC<Props> = ({ route, navigation }) => {
         const selectedEquipo = selectedItems[0];
 
         try {
-            const response = await axios.get(`http://192.168.16.146:3003/api/calibraciones/vernier12/${selectedEquipo.ID}`);
+            const response = await axios.get(`http://192.168.16.146:3002/api/calibraciones/vernier12/${selectedEquipo.ID}`);
             const siguienteCalibracion = response.data["Siguiente Calibracion"];
 
             if (siguienteCalibracion) {

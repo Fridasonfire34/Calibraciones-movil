@@ -95,7 +95,7 @@ const CalibrarBasculaScreen: React.FC<Props> = ({ route }) => {
         };
     
         try {
-            const response = await axios.post('http://192.168.16.146:3003/api/calibracionBascula', payload, {
+            const response = await axios.post('http://192.168.16.146:3002/api/calibracionBascula', payload, {
                 headers: { 'Content-Type': 'application/json' },
             });
     
