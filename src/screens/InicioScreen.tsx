@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Image } from
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Alert } from 'react-native';
+import axios from 'axios';
 
 
 type RootStackParamList = {
@@ -43,7 +44,7 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleFlex = async () => {
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/historicoFlex');
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/historicoFlex');
             if (!response.ok) {
                 throw new Error('No se pudo procesar el histórico');
             }
@@ -63,7 +64,7 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleTrans = async () => {
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/historicoTransportador');
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/historicoTransportador');
             if (!response.ok) {
                 throw new Error('No se pudo procesar el histórico');
             }
@@ -78,7 +79,7 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleOtros = async () => {
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/historicoOtros');
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/historicoOtros');
             if (!response.ok) {
                 throw new Error('No se pudo procesar el histórico');
             }

@@ -30,8 +30,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [focusNomina, setFocusNomina] = useState(false);
-    const [focusPassword, setFocusPassword] = useState(false);
     const passwordRef = useRef<TextInput>(null);
+    const [focusPassword, setFocusPassword] = useState(false);
 
     const animNomina = useRef(new Animated.Value(nomina ? 1 : 0)).current;
     const animPassword = useRef(new Animated.Value(password ? 1 : 0)).current;
@@ -92,7 +92,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         try {
             setError('');
 
-            const response = await fetch('http://10.0.2.2:3003/api/login', {
+            const response = await fetch('http://192.168.16.146:3003/api/calibraciones/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

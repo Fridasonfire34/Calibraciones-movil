@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Image } from
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Alert } from 'react-native';
+import axios from 'axios';
 
 
 type RootStackParamList = {
@@ -42,8 +43,8 @@ const VernScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleVer6 = async () => {
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/historicoVer');
-            if (!response.ok) {
+            const response = await axios.get('http://192.168.16.146:3003/api/calibraciones/historicoVer');
+            if (response.status !== 200) {
                 throw new Error('No se pudo procesar el histórico');
             }
 
@@ -58,8 +59,8 @@ const VernScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleVer12 = async () => {
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/historicoVer12');
-            if (!response.ok) {
+            const response = await axios.get('http://192.168.16.146:3003/api/calibraciones/historicoVer12');
+            if (response.status !== 200) {
                 throw new Error('No se pudo procesar el histórico');
             }
 

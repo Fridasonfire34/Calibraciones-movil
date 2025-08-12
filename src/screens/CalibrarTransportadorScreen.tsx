@@ -7,6 +7,7 @@ import {
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from './App';
 import moment from 'moment';
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
 type Props = StackScreenProps<RootStackParamList, 'CalibrarTransportadorScreen'>;
@@ -92,9 +93,9 @@ const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
             siguienteCalibracion: nextCalibration,
             comentarios,
         };
-
+    
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/calibracionTrans', {
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/calibracionTrans', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -104,7 +105,7 @@ const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://10.0.2.2:3003/api/transportador', {
+            const updateResponse = await fetch('http://192.168.16.192:3002/api/calibraciones/transportador', {
                 method: 'GET',
             });
 

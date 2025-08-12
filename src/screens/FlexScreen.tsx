@@ -33,7 +33,7 @@ const FlexScreen: React.FC<Props> = ({ route, navigation }) => {
         const fetchEquipos = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://10.0.2.2:3003/api/flexometros');
+                const response = await axios.get('http://192.168.16.192:3002/api/calibraciones/flexometros');
                 setEquipos(response.data);
                 setFilteredEquipos(response.data);
             } catch (error: any) {
@@ -78,7 +78,7 @@ const FlexScreen: React.FC<Props> = ({ route, navigation }) => {
         const selectedEquipo = selectedItems[0];
 
         try {
-            const response = await axios.get(`http://10.0.2.2:3003/api/flexometros/${selectedEquipo.ID}`);
+            const response = await axios.get(`http://192.168.16.192:3002/api/calibraciones/flexometros/${selectedEquipo.ID}`);
             const siguienteCalibracion = response.data["Siguiente Calibracion"];
 
             if (siguienteCalibracion) {

@@ -7,6 +7,7 @@ import {
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from './App';
 import moment from 'moment';
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
 type Props = StackScreenProps<RootStackParamList, 'CalibrarBasculaScreen'>;
@@ -92,18 +93,14 @@ const CalibrarBasculaScreen: React.FC<Props> = ({ route }) => {
             siguienteCalibracion: nextCalibration,
             comentarios,
         };
-
+    
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/calibracionBascula', {
-                method: 'POST',
+            const response = await axios.post('http://192.168.16.146:3003/api/calibracionBascula', payload, {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
             });
-
-            if (!response.ok) throw new Error(`Error al guardar: ${response.statusText}`);
-            const data = await response.json();
-            console.log('Calibración guardada:', data);
-
+    
+            console.log('Calibración guardada:', response.data);
+    
             Alert.alert('Éxito', 'Calibración registrada correctamente', [
                 {
                     text: 'OK',
@@ -112,14 +109,15 @@ const CalibrarBasculaScreen: React.FC<Props> = ({ route }) => {
                             index: 0,
                             routes: [{ name: 'Inicio' }],
                         });
-                    }
+                    },
                 },
             ]);
         } catch (error) {
-            console.error(' Error:', error);
+            console.error('Error:', error);
             Alert.alert('Error al guardar la calibración.');
         }
     };
+    
 
     return (
         <ImageBackground source={require('./assets/cats.jpg')} resizeMode="cover" style={styles.container}>

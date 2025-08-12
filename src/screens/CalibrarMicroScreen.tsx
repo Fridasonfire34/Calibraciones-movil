@@ -7,6 +7,7 @@ import {
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from './App';
 import moment from 'moment';
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
 type Props = StackScreenProps<RootStackParamList, 'CalibrarMicroScreen'>;
@@ -96,9 +97,9 @@ const CalibrarMicroScreen: React.FC<Props> = ({ route }) => {
             siguienteCalibracion: nextCalibration,
             comentarios,
         };
-
+    
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/calibracionMicro', {
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/calibracionMicro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -108,7 +109,7 @@ const CalibrarMicroScreen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://10.0.2.2:3003/api/Otros', {
+            const updateResponse = await fetch('http://192.168.16.192:3002/api/calibraciones/Otros', {
                 method: 'GET',
             });
 

@@ -7,6 +7,7 @@ import {
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from './App';
 import moment from 'moment';
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -96,9 +97,9 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
             siguienteCalibracion: nextCalibration,
             comentarios,
         };
-
+    
         try {
-            const response = await fetch('http://10.0.2.2:3003/api/calibracionVer', {
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/calibracionVer', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -108,7 +109,7 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://10.0.2.2:3003/api/vernier', {
+            const updateResponse = await fetch('http://192.168.16.192:3002/api/calibraciones/vernier', {
                 method: 'GET',
             });
 

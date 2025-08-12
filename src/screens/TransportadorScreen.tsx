@@ -33,7 +33,7 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
         const fetchEquipos = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://10.0.2.2:3003/api/transportador');
+                const response = await axios.get('http://192.168.16.192:3002/api/calibraciones/transportador');
                 setEquipos(response.data);
                 setFilteredEquipos(response.data);
             } catch (error: any) {
@@ -78,7 +78,7 @@ const TransportadorScreen: React.FC<Props> = ({ route, navigation }) => {
         const selectedEquipo = selectedItems[0];
 
         try {
-            const response = await axios.get(`http://10.0.2.2:3003/api/transportador/${selectedEquipo.ID}`);
+            const response = await axios.get(`http://192.168.16.192:3002/api/calibraciones/transportador/${selectedEquipo.ID}`);
             const siguienteCalibracion = response.data["Siguiente Calibracion"];
 
             if (siguienteCalibracion) {
