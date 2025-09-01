@@ -33,7 +33,7 @@ const OtrosScreen: React.FC<Props> = ({ route, navigation }) => {
         const fetchEquipos = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://192.168.16.192:3002/api/calibraciones/Otros');
+                const response = await axios.get('http://192.168.16.146:3002/api/calibraciones/Otros');
                 setEquipos(response.data);
                 setFilteredEquipos(response.data);
             } catch (error: any) {
@@ -94,7 +94,7 @@ const OtrosScreen: React.FC<Props> = ({ route, navigation }) => {
         const selectedEquipo = selectedItems[0];
 
         try {
-            const response = await axios.get(`http://192.168.16.192:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
+            const response = await axios.get(`http://192.168.16.146:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
             const siguienteCalibracion = response.data["Siguiente Calibracion"];
 
             if (siguienteCalibracion) {
@@ -143,7 +143,7 @@ const OtrosScreen: React.FC<Props> = ({ route, navigation }) => {
         const selectedEquipo = selectedItems[0];
 
         try {
-            const response = await axios.get(`http://192.168.16.192:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
+            const response = await axios.get(`http://192.168.16.146:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
             const siguienteCalibracion = response.data["Siguiente Calibracion"];
 
             if (siguienteCalibracion) {
@@ -189,7 +189,7 @@ const OtrosScreen: React.FC<Props> = ({ route, navigation }) => {
         const selectedEquipo = selectedItems[0];
 
         try {
-            const response = await axios.get(`http://192.168.16.192:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
+            const response = await axios.get(`http://192.168.16.146:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
             const siguienteCalibracion = response.data["Siguiente Calibracion"];
 
             if (siguienteCalibracion) {

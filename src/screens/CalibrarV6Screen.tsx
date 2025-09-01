@@ -39,7 +39,7 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
         const next = moment().add(90, 'days');
         setDateNow(now.format('YYYY-MM-DD'));
         setNextCalibration(next.format('YYYY-MM'));
-        setPatron('I-CAL-002');
+        setPatron('I-CAL-020');
     }, []);
 
     const handleChangeDimension = (index: number, value: string) => {
@@ -99,8 +99,8 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
         };
     
         try {
-            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/calibracionVer', {
-                method: 'POST',
+            const response = await fetch('http://192.168.16.146:3002/api/calibraciones/calibracionVer', {
+                meth od: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
@@ -109,7 +109,7 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://192.168.16.192:3002/api/calibraciones/vernier', {
+            const updateResponse = await fetch('http://192.168.16.146:3002/api/calibraciones/vernier', {
                 method: 'GET',
             });
 
@@ -167,7 +167,7 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
 
                         <View style={{ width: '48%' }}>
                             <Text style={styles.dimensionLabel}>Patrón de Verificación:</Text>
-                            <Text style={styles.inputPatron}>{'I-CAL-002'}</Text>
+                            <Text style={styles.inputPatron}>{'I-CAL-020'}</Text>
                         </View>
 
                         <Text style={styles.label}>Comentarios:</Text>

@@ -35,7 +35,7 @@ const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
         const next = moment().add(90, 'days');
         setDateNow(now.format('YYYY-MM-DD'));
         setNextCalibration(next.format('YYYY-MM'));
-        setPatron('I-CAL-008');
+        setPatron('I-CAL-020');
     }, []);
 
     const handleChangeDimension = (index: number, value: string) => {
@@ -95,7 +95,7 @@ const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
         };
     
         try {
-            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/calibracionTrans', {
+            const response = await fetch('http://192.168.16.146:3002/api/calibraciones/calibracionTrans', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -105,7 +105,7 @@ const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://192.168.16.192:3002/api/calibraciones/transportador', {
+            const updateResponse = await fetch('http://192.168.16.146:3002/api/calibraciones/transportador', {
                 method: 'GET',
             });
 
@@ -163,7 +163,7 @@ const CalibrarTransportadorScreen: React.FC<Props> = ({ route }) => {
 
                         <View style={{ width: '48%' }}>
                             <Text style={styles.dimensionLabel}>Patrón de Verificación:</Text>
-                            <Text style={styles.inputPatron}>{'I-CAL-003'}</Text>
+                            <Text style={styles.inputPatron}>{'I-CAL-020'}</Text>
                         </View>
 
                         <Text style={styles.label}>Comentarios:</Text>

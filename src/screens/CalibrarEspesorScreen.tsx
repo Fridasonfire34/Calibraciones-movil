@@ -99,7 +99,7 @@ const CalibrarEspesorScreen: React.FC<Props> = ({ route }) => {
         };
     
         try {
-            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/calibracionEspesor', {
+            const response = await fetch('http://192.168.16.146:3002/api/calibraciones/calibracionEspesor', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -109,7 +109,7 @@ const CalibrarEspesorScreen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://192.168.16.192:3002/api/calibraciones/Otros', {
+            const updateResponse = await fetch('http://192.168.16.146:3002/api/calibraciones/Otros', {
                 method: 'GET',
             });
 
