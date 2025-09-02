@@ -43,7 +43,7 @@ const VernScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleVer6 = async () => {
         try {
-            const response = await axios.get('http://192.168.16.146:3002/api/calibraciones/historicoVer');
+            const response = await axios.get('http://192.168.16.192:3002/api/calibraciones/historicoVer');
             if (response.status !== 200) {
                 throw new Error('No se pudo procesar el histórico');
             }
@@ -59,7 +59,7 @@ const VernScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleVer12 = async () => {
         try {
-            const response = await axios.get('http://192.168.16.146:3002/api/calibraciones/historicoVer12');
+            const response = await axios.get('http://192.168.16.192:3002/api/calibraciones/historicoVer12');
             if (response.status !== 200) {
                 throw new Error('No se pudo procesar el histórico');
             }

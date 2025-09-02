@@ -33,7 +33,7 @@ const OtrosScreen: React.FC<Props> = ({ route, navigation }) => {
         const fetchEquipos = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://192.168.16.146:3002/api/calibraciones/Otros');
+                const response = await axios.get('http://192.168.16.192:3002/api/calibraciones/Otros');
                 setEquipos(response.data);
                 setFilteredEquipos(response.data);
             } catch (error: any) {
@@ -72,162 +72,64 @@ const OtrosScreen: React.FC<Props> = ({ route, navigation }) => {
         });
     };
 
-    const handleCalibrar = () => {
-        if (selectedItems.length > 0) {
-            const selectedID = selectedItems[0].ID;
+    const handleCalibrar = async () => {
+    if (selectedItems.length === 0) return;
 
-            if (selectedID === 'I-CAL-006') {
-                handleCalibrarEspesor();
-            } else if (selectedID === 'I-CAL-014') {
-                handleCalibrarBascula();
-            } else if (selectedID === 'I-CAL-052') {
-                handleCalibrarMicro();
-            } else {
-                Alert.alert('Equipo no reconocido', `No hay una acción definida para el equipo: ${selectedID}`);
-            }
-        }
-    };
+    const selectedEquipo = selectedItems[0];
 
-    const handleCalibrarEspesor = async () => {
-        if (selectedItems.length === 0) return;
+    try {
+        const response = await axios.get(`http://192.168.16.192:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
+        const equipoData = response.data;
 
-        const selectedEquipo = selectedItems[0];
+        const siguienteCalibracion = equipoData["Siguiente Calibracion"];
+        const patron = equipoData["Patron"];
+        const cantidadDimensiones = equipoData["Dimensiones"];
+        const tolerancias = equipoData["Tolerancias"];
 
-        try {
-            const response = await axios.get(`http://192.168.16.146:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
-            const siguienteCalibracion = response.data["Siguiente Calibracion"];
+        const fechaCalibracion = new Date(siguienteCalibracion);
+        const fechaHoy = new Date();
 
-            if (siguienteCalibracion) {
-                const fechaCalibracion = new Date(siguienteCalibracion);
-                const fechaHoy = new Date();
-
-                if (fechaCalibracion > fechaHoy) {
-                    const formattedDate = fechaCalibracion.toLocaleDateString('es-MX', {
-                        year: 'numeric',
-                        month: 'long'
-                    });
-
-                    Alert.alert(
-                        'Calibración programada',
-                        `La calibración programada de este equipo es en: ${formattedDate}. Aún no es necesario calibrarlo.`,
-                        [
-                            { text: 'OK', style: 'cancel' },
-                            {
-                                text: 'Calibrar Equipo',
-                                onPress: () => {
-                                    navigation.navigate('CalibrarEspesorScreen', {
-                                        equipo: selectedEquipo.ID,
-                                        nomina: nomina,
-                                    });
-                                },
-                            },
-                        ]
-                    );
-                    return;
-                }
-            }
-
-            navigation.navigate('CalibrarEspesorScreen', {
-                equipo: selectedEquipo.ID,
-                nomina: nomina,
+        if (siguienteCalibracion && fechaCalibracion > fechaHoy) {
+            const formattedDate = fechaCalibracion.toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'long',
             });
-        } catch (error) {
-            console.error('Error al verificar la calibración:', error);
-            Alert.alert('Error', 'No se pudo verificar la fecha de calibración.');
+
+            Alert.alert(
+                'Calibración programada',
+                `La calibración programada de este equipo es en: ${formattedDate}. Aún no es necesario calibrarlo.`,
+                [
+                    { text: 'Cancelar', style: 'cancel' },
+                    {
+                        text: 'Calibrar de todos modos',
+                        onPress: () => {
+                            navigation.navigate('CalibrarOtroScreen', {
+                                equipo: selectedEquipo.ID,
+                                nomina,
+                                patron,
+                                cantidadDimensiones,
+                                tolerancias,
+                            });
+                        },
+                    },
+                ]
+            );
+            return;
         }
-    };
 
-    const handleCalibrarMicro = async () => {
-        if (selectedItems.length === 0) return;
+        navigation.navigate('CalibrarOtroScreen', {
+            equipo: selectedEquipo.ID,
+            nomina,
+            patron,
+            cantidadDimensiones,
+            tolerancias,
+        });
 
-        const selectedEquipo = selectedItems[0];
-
-        try {
-            const response = await axios.get(`http://192.168.16.146:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
-            const siguienteCalibracion = response.data["Siguiente Calibracion"];
-
-            if (siguienteCalibracion) {
-                const fechaCalibracion = new Date(siguienteCalibracion);
-                const fechaHoy = new Date();
-
-                if (fechaCalibracion > fechaHoy) {
-                    const formattedDate = fechaCalibracion.toLocaleDateString('es-MX');
-
-                    Alert.alert(
-                        'Calibración programada',
-                        `La calibración programada de este equipo es en: ${formattedDate}. Aún no es necesario calibrarlo.`,
-                        [
-                            { text: 'OK', style: 'cancel' },
-                            {
-                                text: 'Calibrar Equipo',
-                                onPress: () => {
-                                    navigation.navigate('CalibrarMicroScreen', {
-                                        equipo: selectedEquipo.ID,
-                                        nomina: nomina,
-                                    });
-                                },
-                            },
-                        ]
-                    );
-                    return;
-                }
-            }
-
-            navigation.navigate('CalibrarMicroScreen', {
-                equipo: selectedEquipo.ID,
-                nomina: nomina,
-            });
-        } catch (error) {
-            console.error('Error al verificar la calibración:', error);
-            Alert.alert('Error', 'No se pudo verificar la fecha de calibración.');
-        }
-    };
-
-    const handleCalibrarBascula = async () => {
-        if (selectedItems.length === 0) return;
-
-        const selectedEquipo = selectedItems[0];
-
-        try {
-            const response = await axios.get(`http://192.168.16.146:3002/api/calibraciones/Otros/${selectedEquipo.ID}`);
-            const siguienteCalibracion = response.data["Siguiente Calibracion"];
-
-            if (siguienteCalibracion) {
-                const fechaCalibracion = new Date(siguienteCalibracion);
-                const fechaHoy = new Date();
-
-                if (fechaCalibracion > fechaHoy) {
-                    const formattedDate = fechaCalibracion.toLocaleDateString('es-MX');
-
-                    Alert.alert(
-                        'Calibración programada',
-                        `La calibración programada de este equipo es en: ${formattedDate}. Aún no es necesario calibrarlo.`,
-                        [
-                            { text: 'OK', style: 'cancel' },
-                            {
-                                text: 'Calibrar Equipo',
-                                onPress: () => {
-                                    navigation.navigate('CalibrarBasculaScreen', {
-                                        equipo: selectedEquipo.ID,
-                                        nomina: nomina,
-                                    });
-                                },
-                            },
-                        ]
-                    );
-                    return;
-                }
-            }
-
-            navigation.navigate('CalibrarBasculaScreen', {
-                equipo: selectedEquipo.ID,
-                nomina: nomina,
-            });
-        } catch (error) {
-            console.error('Error al verificar la calibración:', error);
-            Alert.alert('Error', 'No se pudo verificar la fecha de calibración.');
-        }
-    };
+    } catch (error) {
+        console.error('Error al obtener datos del equipo:', error);
+        Alert.alert('Error', 'No se pudo obtener la información del equipo.');
+    }
+};
 
     const renderItem = ({ item }: { item: Equipos }) => {
         const isSelected = selectedItems.some(selected => selected.ID === item.ID);

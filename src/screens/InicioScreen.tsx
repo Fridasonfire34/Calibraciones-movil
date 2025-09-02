@@ -44,7 +44,7 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleFlex = async () => {
         try {
-            const response = await fetch('http://192.168.16.146:3002/api/calibraciones/historicoFlex');
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/historicoFlex');
             if (!response.ok) {
                 throw new Error('No se pudo procesar el histórico');
             }
@@ -64,7 +64,7 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleTrans = async () => {
         try {
-            const response = await fetch('http://192.168.16.146:3002/api/calibraciones/historicoTransportador');
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/historicoTransportador');
             if (!response.ok) {
                 throw new Error('No se pudo procesar el histórico');
             }
@@ -79,7 +79,7 @@ const InicioScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleOtros = async () => {
         try {
-            const response = await fetch('http://192.168.16.146:3002/api/calibraciones/historicoOtros');
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/historicoOtros');
             if (!response.ok) {
                 throw new Error('No se pudo procesar el histórico');
             }

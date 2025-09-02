@@ -16,6 +16,7 @@ import CalibrarBasculaScreem from './src/screens/CalibrarBasculaScreen';
 import CalibrarMicroScreen from './src/screens/CalibrarMicroScreen';
 import OtrosScreen from './src/screens/OtrosScreen';
 import EspesorScreen from './src/screens/CalibrarEspesorScreen';
+import CalibrarOtroScreen from './src/screens/CalibrarOtroScreen';
 
 type RootStackParamList = {
   Login: undefined;
@@ -33,6 +34,7 @@ type RootStackParamList = {
   CalibrarMicroScreen: { nomina: string, equipo: string };
   CalibrarEspesorScreen: { nomina: string, equipo: string };
   OtrosScreen: { nomina: string, equipo: string };
+  CalibrarOtroScreen: { nomina: string, equipo: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -102,18 +104,8 @@ const App: React.FC = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="CalibrarBasculaScreen"
-          component={CalibrarBasculaScreem}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="CalibrarMicroScreen"
-          component={CalibrarMicroScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="CalibrarEspesorScreen"
-          component={EspesorScreen}
+          name="CalibrarOtroScreen"
+          component={CalibrarOtroScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

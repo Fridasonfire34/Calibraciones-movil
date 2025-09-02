@@ -99,7 +99,7 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
         };
     
         try {
-            const response = await fetch('http://192.168.16.146:3002/api/calibraciones/calibracionFlex', {
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/calibracionFlex', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -109,7 +109,7 @@ const CalibrarFScreen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://192.168.16.146:3002/api/calibraciones/flexometros', {
+            const updateResponse = await fetch('http://192.168.16.192:3002/api/calibraciones/flexometros', {
                 method: 'GET',
             });
 

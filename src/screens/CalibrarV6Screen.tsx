@@ -99,8 +99,8 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
         };
     
         try {
-            const response = await fetch('http://192.168.16.146:3002/api/calibraciones/calibracionVer', {
-                meth od: 'POST',
+            const response = await fetch('http://192.168.16.192:3002/api/calibraciones/calibracionVer', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
@@ -109,7 +109,7 @@ const CalibrarV6Screen: React.FC<Props> = ({ route }) => {
             const data = await response.json();
             console.log('Calibración guardada:', data);
 
-            const updateResponse = await fetch('http://192.168.16.146:3002/api/calibraciones/vernier', {
+            const updateResponse = await fetch('http://192.168.16.192:3002/api/calibraciones/vernier', {
                 method: 'GET',
             });
 
